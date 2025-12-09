@@ -95,6 +95,16 @@ class Server:
         def deanonymizers():
             """Return a list of supported deanonymizers."""
             return jsonify(self.deanonymize.get_deanonymizers())
+        
+        @self.app.route("/genz-preview", methods=["GET"])
+        def genz_preview():
+            """Return an example of Gen-Z anonymization output."""
+            example_data = {
+                "example": "Call Emily at 577-988-1234",
+                "example output": "Call GOAT at vibe check",
+                "description": "Example output of the genz anonymizer."
+            }
+            return jsonify(example_data)
 
         @self.app.errorhandler(InvalidParamError)
         def invalid_param(err):
