@@ -95,7 +95,7 @@ class Server:
         def deanonymizers():
             """Return a list of supported deanonymizers."""
             return jsonify(self.deanonymize.get_deanonymizers())
-        
+
         @self.app.route("/genz-preview", methods=["GET"])
         def genz_preview():
             """Return an example of Gen-Z anonymization output."""
@@ -105,7 +105,7 @@ class Server:
                 "description": "Example output of the genz anonymizer."
             }
             return jsonify(example_data)
-        
+
         @self.app.route("/genz", methods=["POST"])
         def genz():
             """Return Gen-Z anonymization output."""
@@ -132,7 +132,7 @@ class Server:
             )
 
             return Response(result.to_json(), mimetype="application/json")
-            
+
 
         @self.app.errorhandler(InvalidParamError)
         def invalid_param(err):
