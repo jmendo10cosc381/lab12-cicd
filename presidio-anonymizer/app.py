@@ -96,6 +96,44 @@ class Server:
             """Return a list of supported deanonymizers."""
             return jsonify(self.deanonymize.get_deanonymizers())
 
+        @self.app.route("/genz-preview", methods=["GET"])
+        def genz_preview():
+            """Return an example of Gen-Z anonymization output."""
+            example_data = {
+                "example": "Call Emily at 577-988-1234",
+                "example output": "Call GOAT at vibe check",
+                "description": "Example output of the genz anonymizer."
+            }
+            return jsonify(example_data)
+
+        @self.app.route("/genz", methods=["POST"])
+        def genz():
+            """Return Gen-Z anonymization output."""
+            content = request.get_json()
+
+            text = content.get("text", "")
+            analyzer_results_json = content.get("analyzer_results")
+
+            analyzer_results = AppEntitiesConvertor.analyzer_results_from_json(
+                analyzer_results_json
+            )
+
+            operators_config = {}
+            for result in analyzer_results:
+                operators_config[result.entity_type] = {
+                    "type": "genz",
+                    "params": {"entity_type": result.entity_type}
+                }
+
+            result = self.anonymizer.anonymize(
+                text=text,
+                analyzer_results=analyzer_results,
+                operators=AppEntitiesConvertor.operators_config_from_json(operators_config)
+            )
+
+            return Response(result.to_json(), mimetype="application/json")
+
+
         @self.app.errorhandler(InvalidParamError)
         def invalid_param(err):
             self.logger.warning(

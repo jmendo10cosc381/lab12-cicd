@@ -401,3 +401,22 @@ def test_overlapping_keep_both():
 
     assert response_status == 200
     assert equal_json_strings(expected_response, response_content)
+
+def test_given_anonymize_called_with_genz_then_expected_valid_response_returned():
+    request_body = """
+    {
+        "text": "Please contact Emily Carter at 734-555-9284.",
+        "analyzer_results": [
+            { "start": 16, "end": 28, "score": 0.30, "entity_type": "PERSON" },
+            { "start": 32, "end": 44, "score": 0.95, "entity_type": "PHONE_NUMBER" }
+        ],
+        "anonymizers": {
+            "PERSON": { "type": "genz" },
+            "PHONE_NUMBER": { "type": "genz" }
+        }
+    }
+    """
+
+    response_status, response_content = anonymize(request_body)
+
+    assert response_status == 200
